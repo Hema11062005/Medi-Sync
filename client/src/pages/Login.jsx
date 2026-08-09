@@ -27,9 +27,14 @@ export default function Login() {
         password,
       });
 
-      login(res.data.user, res.data.token);
+      console.log("Login Response:", res.data);
 
-      navigate("/dashboard");
+login(res.data.user, res.data.token);
+
+console.log("Token after login:", localStorage.getItem("token"));
+console.log("User after login:", localStorage.getItem("user"));
+
+navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Login Failed");
     } finally {

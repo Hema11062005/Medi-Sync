@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://medisync-backend-zaqn.onrender.com/api",
 });
 
-// Attach JWT token automatically to every request
+// Automatically attach JWT
 API.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");

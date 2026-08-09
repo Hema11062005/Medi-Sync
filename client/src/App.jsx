@@ -5,7 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Patients from "./pages/Patients";
 import Doctors from "./pages/Doctors";
 import Appointments from "./pages/Appointments";
-import Pharmacy from "./pages/Pharmacy";
+import Pharmacy from "./pages/pharmacy";
 import Billing from "./pages/Billing";
 import Laboratory from "./pages/lab";
 import Reports from "./pages/Report";
