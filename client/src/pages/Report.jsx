@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../api/api";
 import Sidebar from "../components/Sidebar";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -70,7 +70,7 @@ const exportExcel = () => {
 
   const fetchReports = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/reports");
+      const res = await API.get("/reports");
       setReports(res.data);
     } catch (err) {
       console.log(err);
