@@ -8,6 +8,7 @@ const Lab = require("../labs/lab");
 
 const getDashboard = async (req, res) => {
   try {
+    // Counts
     const totalPatients = await Patient.countDocuments();
     const totalDoctors = await Doctor.countDocuments();
     const totalAppointments = await Appointment.countDocuments();
@@ -18,8 +19,9 @@ const getDashboard = async (req, res) => {
 
     // Total Revenue
     const bills = await Bill.find();
+
     const totalRevenue = bills.reduce(
-      (sum, bill) => sum + Number(bill.amount),
+      (sum, bill) => sum + Number(bill.amount || 0),
       0
     );
 
@@ -31,11 +33,14 @@ const getDashboard = async (req, res) => {
       .limit(5);
 
     // Low Stock Medicines
+    // Medicine schema uses "quantity", NOT "stock"
     const lowStockMedicines = await Medicine.find({
-      stock: { $lt: 20 },
-    });
+      quantity: { $lt: 20 },
+    })
+      .sort({ quantity: 1 })
+      .limit(10);
 
-    res.json({
+    res.status(200).json({
       totalPatients,
       totalDoctors,
       totalAppointments,
@@ -48,11 +53,14 @@ const getDashboard = async (req, res) => {
       lowStockMedicines,
     });
   } catch (error) {
+    console.error("Dashboard Error:", error);
+
     res.status(500).json({
       message: error.message,
     });
   }
 };
+
 module.exports = {
   getDashboard,
 };

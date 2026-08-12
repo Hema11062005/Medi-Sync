@@ -37,18 +37,26 @@ function Dashboard() {
     lowStockMedicines: [],
   });
 
-  useEffect(() => {
-    fetchDashboard();
-  }, []);
-
+  // Fetch dashboard data
   const fetchDashboard = async () => {
     try {
       const res = await API.get("/dashboard");
+
+      console.log("Dashboard Data:", res.data);
+
       setStats(res.data);
     } catch (err) {
-      console.error("Dashboard error:", err);
+      console.error(
+        "Dashboard error:",
+        err.response?.data || err.message
+      );
     }
   };
+
+  // Fetch when dashboard loads
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
 
   const cardStyle = {
     color: "white",
@@ -68,9 +76,11 @@ function Dashboard() {
       "Prescriptions",
       "Labs",
     ],
+
     datasets: [
       {
         label: "Hospital Statistics",
+
         data: [
           stats.totalPatients,
           stats.totalDoctors,
@@ -80,6 +90,7 @@ function Dashboard() {
           stats.totalPrescriptions,
           stats.totalLabTests,
         ],
+
         backgroundColor: [
           "#4CAF50",
           "#2196F3",
@@ -89,6 +100,7 @@ function Dashboard() {
           "#00BCD4",
           "#607D8B",
         ],
+
         borderRadius: 8,
       },
     ],
@@ -96,10 +108,12 @@ function Dashboard() {
 
   const chartOptions = {
     responsive: true,
+
     plugins: {
       legend: {
         position: "top",
       },
+
       title: {
         display: true,
         text: "Hospital Overview",
@@ -108,7 +122,12 @@ function Dashboard() {
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+      }}
+    >
       <Sidebar />
 
       <div
@@ -129,21 +148,30 @@ function Dashboard() {
           }}
         >
           <div>
-            <h1 style={{ margin: 0 }}>MediSync Dashboard</h1>
+            <h1 style={{ margin: 0 }}>
+              MediSync Dashboard
+            </h1>
 
-            <p style={{ color: "gray", marginTop: "8px" }}>
+            <p
+              style={{
+                color: "gray",
+                marginTop: "8px",
+              }}
+            >
               Welcome back, Administrator 👋
             </p>
           </div>
 
           <div
             style={{
-              background: "linear-gradient(135deg,#2563eb,#1d4ed8)",
+              background:
+                "linear-gradient(135deg,#2563eb,#1d4ed8)",
               color: "white",
               padding: "15px 25px",
               borderRadius: "12px",
               textAlign: "center",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+              boxShadow:
+                "0 4px 12px rgba(0,0,0,0.2)",
             }}
           >
             <div
@@ -162,12 +190,15 @@ function Dashboard() {
                 marginTop: "5px",
               }}
             >
-              {new Date().toLocaleDateString("en-US", {
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              })}
+              {new Date().toLocaleDateString(
+                "en-US",
+                {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                }
+              )}
             </div>
           </div>
         </div>
@@ -176,7 +207,8 @@ function Dashboard() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
+            gridTemplateColumns:
+              "repeat(4, 1fr)",
             gap: "20px",
             marginTop: "30px",
           }}
@@ -184,7 +216,8 @@ function Dashboard() {
           <div
             style={{
               ...cardStyle,
-              background: "linear-gradient(135deg,#4CAF50,#2E7D32)",
+              background:
+                "linear-gradient(135deg,#4CAF50,#2E7D32)",
             }}
           >
             <h2>{stats.totalPatients}</h2>
@@ -194,7 +227,8 @@ function Dashboard() {
           <div
             style={{
               ...cardStyle,
-              background: "linear-gradient(135deg,#2196F3,#1565C0)",
+              background:
+                "linear-gradient(135deg,#2196F3,#1565C0)",
             }}
           >
             <h2>{stats.totalDoctors}</h2>
@@ -204,7 +238,8 @@ function Dashboard() {
           <div
             style={{
               ...cardStyle,
-              background: "linear-gradient(135deg,#FF9800,#F57C00)",
+              background:
+                "linear-gradient(135deg,#FF9800,#F57C00)",
             }}
           >
             <h2>{stats.totalAppointments}</h2>
@@ -214,7 +249,8 @@ function Dashboard() {
           <div
             style={{
               ...cardStyle,
-              background: "linear-gradient(135deg,#9C27B0,#6A1B9A)",
+              background:
+                "linear-gradient(135deg,#9C27B0,#6A1B9A)",
             }}
           >
             <h2>{stats.totalMedicines}</h2>
@@ -224,7 +260,8 @@ function Dashboard() {
           <div
             style={{
               ...cardStyle,
-              background: "linear-gradient(135deg,#E91E63,#C2185B)",
+              background:
+                "linear-gradient(135deg,#E91E63,#C2185B)",
             }}
           >
             <h2>{stats.totalBills}</h2>
@@ -234,7 +271,8 @@ function Dashboard() {
           <div
             style={{
               ...cardStyle,
-              background: "linear-gradient(135deg,#00BCD4,#00838F)",
+              background:
+                "linear-gradient(135deg,#00BCD4,#00838F)",
             }}
           >
             <h2>{stats.totalPrescriptions}</h2>
@@ -244,7 +282,8 @@ function Dashboard() {
           <div
             style={{
               ...cardStyle,
-              background: "linear-gradient(135deg,#607D8B,#37474F)",
+              background:
+                "linear-gradient(135deg,#607D8B,#37474F)",
             }}
           >
             <h2>{stats.totalLabTests}</h2>
@@ -254,17 +293,22 @@ function Dashboard() {
           <div
             style={{
               ...cardStyle,
-              background: "linear-gradient(135deg,#22c55e,#15803d)",
+              background:
+                "linear-gradient(135deg,#22c55e,#15803d)",
             }}
           >
-            <h2>₹ {stats.totalRevenue}</h2>
+            <h2>
+              ₹ {stats.totalRevenue || 0}
+            </h2>
+
             <p>Total Revenue</p>
 
             <div
               style={{
                 marginTop: "15px",
                 height: "8px",
-                background: "rgba(255,255,255,0.3)",
+                background:
+                  "rgba(255,255,255,0.3)",
                 borderRadius: "10px",
               }}
             >
@@ -287,7 +331,8 @@ function Dashboard() {
             background: "#fff",
             padding: "25px",
             borderRadius: "15px",
-            boxShadow: "0 5px 15px rgba(0,0,0,0.12)",
+            boxShadow:
+              "0 5px 15px rgba(0,0,0,0.12)",
           }}
         >
           <h2
@@ -299,7 +344,10 @@ function Dashboard() {
             📊 Hospital Overview
           </h2>
 
-          <Bar data={chartData} options={chartOptions} />
+          <Bar
+            data={chartData}
+            options={chartOptions}
+          />
         </div>
 
         {/* Recent Appointments + Low Stock */}
@@ -317,7 +365,8 @@ function Dashboard() {
               background: "white",
               padding: "20px",
               borderRadius: "12px",
-              boxShadow: "0 3px 12px rgba(0,0,0,.12)",
+              boxShadow:
+                "0 3px 12px rgba(0,0,0,.12)",
             }}
           >
             <h2>Recent Appointments</h2>
@@ -325,14 +374,16 @@ function Dashboard() {
             <table
               style={{
                 width: "100%",
-                borderCollapse: "collapse",
+                borderCollapse:
+                  "collapse",
                 marginTop: "20px",
               }}
             >
               <thead>
                 <tr
                   style={{
-                    backgroundColor: "#2563eb",
+                    backgroundColor:
+                      "#2563eb",
                     color: "#fff",
                     textAlign: "left",
                   }}
@@ -340,7 +391,6 @@ function Dashboard() {
                   <th
                     style={{
                       padding: "12px",
-                      borderBottom: "2px solid #ddd",
                     }}
                   >
                     Patient
@@ -349,7 +399,6 @@ function Dashboard() {
                   <th
                     style={{
                       padding: "12px",
-                      borderBottom: "2px solid #ddd",
                     }}
                   >
                     Doctor
@@ -358,7 +407,6 @@ function Dashboard() {
                   <th
                     style={{
                       padding: "12px",
-                      borderBottom: "2px solid #ddd",
                     }}
                   >
                     Date
@@ -367,7 +415,6 @@ function Dashboard() {
                   <th
                     style={{
                       padding: "12px",
-                      borderBottom: "2px solid #ddd",
                     }}
                   >
                     Status
@@ -376,113 +423,159 @@ function Dashboard() {
               </thead>
 
               <tbody>
-                {stats.recentAppointments?.map((appointment) => (
-                  <tr key={appointment._id}>
-                    <td
-                      style={{
-                        padding: "12px",
-                        borderBottom: "1px solid #eee",
-                      }}
+                {stats.recentAppointments?.map(
+                  (appointment) => (
+                    <tr
+                      key={appointment._id}
                     >
-                      {appointment.patient?.name || "N/A"}
-                    </td>
-
-                    <td
-                      style={{
-                        padding: "12px",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      {appointment.doctor?.name || "N/A"}
-                    </td>
-
-                    <td
-                      style={{
-                        padding: "12px",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      {new Date(
-                        appointment.appointmentDate
-                      ).toLocaleDateString()}
-                    </td>
-
-                    <td
-                      style={{
-                        padding: "12px",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      <span
+                      <td
                         style={{
-                          padding: "5px 12px",
-                          borderRadius: "20px",
-                          color: "#fff",
-                          backgroundColor:
-                            appointment.status === "Completed"
-                              ? "#16a34a"
-                              : appointment.status === "Cancelled"
-                              ? "#dc2626"
-                              : "#f59e0b",
+                          padding: "12px",
+                          borderBottom:
+                            "1px solid #eee",
                         }}
                       >
-                        {appointment.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                        {appointment.patient
+                          ?.name || "N/A"}
+                      </td>
+
+                      <td
+                        style={{
+                          padding: "12px",
+                          borderBottom:
+                            "1px solid #eee",
+                        }}
+                      >
+                        {appointment.doctor
+                          ?.name || "N/A"}
+                      </td>
+
+                      <td
+                        style={{
+                          padding: "12px",
+                          borderBottom:
+                            "1px solid #eee",
+                        }}
+                      >
+                        {appointment.appointmentDate
+                          ? new Date(
+                              appointment.appointmentDate
+                            ).toLocaleDateString()
+                          : "N/A"}
+                      </td>
+
+                      <td
+                        style={{
+                          padding: "12px",
+                          borderBottom:
+                            "1px solid #eee",
+                        }}
+                      >
+                        <span
+                          style={{
+                            padding:
+                              "5px 12px",
+                            borderRadius:
+                              "20px",
+                            color: "#fff",
+                            backgroundColor:
+                              appointment.status ===
+                              "Completed"
+                                ? "#16a34a"
+                                : appointment.status ===
+                                  "Cancelled"
+                                ? "#dc2626"
+                                : "#f59e0b",
+                          }}
+                        >
+                          {appointment.status}
+                        </span>
+                      </td>
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
           </div>
 
-          {/* Low Stock Medicines */}
+          {/* LOW STOCK ALERT */}
           <div
             style={{
               background: "white",
               padding: "20px",
               borderRadius: "12px",
-              boxShadow: "0 3px 12px rgba(0,0,0,.12)",
+              boxShadow:
+                "0 3px 12px rgba(0,0,0,.12)",
             }}
           >
-            <h2>Low Stock Alert</h2>
+            <h2>⚠️ Low Stock Alert</h2>
 
-            {stats.lowStockMedicines?.length === 0 ? (
-              <p
+            {!stats.lowStockMedicines ||
+            stats.lowStockMedicines.length === 0 ? (
+              <div
                 style={{
-                  color: "green",
                   marginTop: "20px",
+                  padding: "15px",
+                  background: "#dcfce7",
+                  color: "#166534",
+                  borderRadius: "10px",
+                  fontWeight: "bold",
                 }}
               >
-                ✅ All medicines are sufficiently stocked.
-              </p>
+                ✅ All medicines are
+                sufficiently stocked.
+              </div>
             ) : (
-              stats.lowStockMedicines?.map((medicine) => (
-                <div
-                  key={medicine._id}
-                  style={{
-                    marginTop: "15px",
-                    padding: "12px",
-                    background: "#fee2e2",
-                    borderRadius: "10px",
-                  }}
-                >
-                  <strong>{medicine.name}</strong>
-
-                  <br />
-
-                  Stock Left:
-
-                  <span
+              stats.lowStockMedicines.map(
+                (medicine) => (
+                  <div
+                    key={medicine._id}
                     style={{
-                      color: "red",
-                      fontWeight: "bold",
+                      marginTop: "15px",
+                      padding: "15px",
+                      background: "#fee2e2",
+                      border:
+                        "1px solid #fecaca",
+                      borderRadius: "10px",
                     }}
                   >
-                    {" "}
-                    {medicine.stock}
-                  </span>
-                </div>
-              ))
+                    {/* FIXED FIELD NAME */}
+                    <strong
+                      style={{
+                        fontSize: "16px",
+                      }}
+                    >
+                      {medicine.medicineName ||
+                        medicine.name ||
+                        "Unknown Medicine"}
+                    </strong>
+
+                    <br />
+
+                    <span
+                      style={{
+                        display: "block",
+                        marginTop: "8px",
+                      }}
+                    >
+                      Stock Left:
+                    </span>
+
+                    {/* FIXED FIELD NAME */}
+                    <span
+                      style={{
+                        color: "#dc2626",
+                        fontWeight: "bold",
+                        fontSize: "20px",
+                      }}
+                    >
+                      {medicine.quantity ??
+                        medicine.stock ??
+                        0}
+                    </span>
+                  </div>
+                )
+              )
             )}
           </div>
         </div>
