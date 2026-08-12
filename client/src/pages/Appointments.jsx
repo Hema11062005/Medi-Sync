@@ -11,33 +11,45 @@ function Appointments() {
     patient: "",
     doctor: "",
     appointmentDate: "",
-    reason: ""
+    reason: "",
   });
 
+  // Fetch appointments
   const fetchAppointments = async () => {
     try {
       const res = await api.get("/appointments");
       setAppointments(res.data);
     } catch (error) {
-      console.log("Fetch Appointments Error:", error.response?.data);
+      console.log(
+        "Fetch Appointments Error:",
+        error.response?.data || error.message
+      );
     }
   };
 
+  // Fetch patients
   const fetchPatients = async () => {
     try {
       const res = await api.get("/patients");
       setPatients(res.data);
     } catch (error) {
-      console.log("Fetch Patients Error:", error.response?.data);
+      console.log(
+        "Fetch Patients Error:",
+        error.response?.data || error.message
+      );
     }
   };
 
+  // Fetch doctors
   const fetchDoctors = async () => {
     try {
       const res = await api.get("/doctors");
       setDoctors(res.data);
     } catch (error) {
-      console.log("Fetch Doctors Error:", error.response?.data);
+      console.log(
+        "Fetch Doctors Error:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -47,36 +59,91 @@ function Appointments() {
     fetchDoctors();
   }, []);
 
+  // Save appointment
   const saveAppointment = async () => {
     try {
-      console.log("Sending Form:", form);
+      // Frontend validation
+      if (!form.patient) {
+        alert("Please select a patient");
+        return;
+      }
 
-      const res = await api.post("/appointments", form);
+      if (!form.doctor) {
+        alert("Please select a doctor");
+        return;
+      }
 
-      console.log("Success:", res.data);
+      if (!form.appointmentDate) {
+        alert("Please select appointment date and time");
+        return;
+      }
+
+      if (!form.reason.trim()) {
+        alert("Please enter the reason for the appointment");
+        return;
+      }
+
+      const appointmentData = {
+        patient: form.patient,
+        doctor: form.doctor,
+        appointmentDate: form.appointmentDate,
+        reason: form.reason.trim(),
+      };
+
+      console.log("Sending Form:", appointmentData);
+
+      const res = await api.post("/appointments", appointmentData);
+
+      console.log("Appointment Success:", res.data);
+
+      alert("Appointment booked successfully!");
 
       setForm({
         patient: "",
         doctor: "",
         appointmentDate: "",
-        reason: ""
+        reason: "",
       });
 
       fetchAppointments();
     } catch (error) {
+      console.log("STATUS:", error.response?.status);
+
       console.log(
-        "Save Appointment Error:",
-        error.response?.data || error.message
+        "BACKEND ERROR:",
+        JSON.stringify(error.response?.data, null, 2)
+      );
+
+      console.log(
+        "SENT FORM:",
+        JSON.stringify(form, null, 2)
+      );
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to book appointment"
       );
     }
   };
 
+  // Delete appointment
   const deleteAppointment = async (id) => {
     try {
       await api.delete(`/appointments/${id}`);
+
+      alert("Appointment deleted successfully!");
+
       fetchAppointments();
     } catch (error) {
-      console.log("Delete Error:", error.response?.data);
+      console.log(
+        "Delete Error:",
+        error.response?.data || error.message
+      );
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to delete appointment"
+      );
     }
   };
 
@@ -84,61 +151,86 @@ function Appointments() {
     <Layout>
       <h1>Appointments</h1>
 
+      {/* Patient */}
       <select
         value={form.patient}
         onChange={(e) =>
-          setForm({ ...form, patient: e.target.value })
+          setForm({
+            ...form,
+            patient: e.target.value,
+          })
         }
       >
         <option value="">Select Patient</option>
+
         {patients.map((patient) => (
-          <option key={patient._id} value={patient._id}>
+          <option
+            key={patient._id}
+            value={patient._id}
+          >
             {patient.name}
           </option>
         ))}
       </select>
 
-      <br /><br />
+      <br />
+      <br />
 
+      {/* Doctor */}
       <select
         value={form.doctor}
         onChange={(e) =>
-          setForm({ ...form, doctor: e.target.value })
+          setForm({
+            ...form,
+            doctor: e.target.value,
+          })
         }
       >
         <option value="">Select Doctor</option>
+
         {doctors.map((doctor) => (
-          <option key={doctor._id} value={doctor._id}>
+          <option
+            key={doctor._id}
+            value={doctor._id}
+          >
             {doctor.name}
           </option>
         ))}
       </select>
 
-      <br /><br />
+      <br />
+      <br />
 
+      {/* Date */}
       <input
         type="datetime-local"
         value={form.appointmentDate}
         onChange={(e) =>
           setForm({
             ...form,
-            appointmentDate: e.target.value
+            appointmentDate: e.target.value,
           })
         }
       />
 
-      <br /><br />
+      <br />
+      <br />
 
+      {/* Reason */}
       <input
         type="text"
         placeholder="Reason"
         value={form.reason}
         onChange={(e) =>
-          setForm({ ...form, reason: e.target.value })
+          setForm({
+            ...form,
+            reason: e.target.value,
+          })
         }
       />
 
-      <br /><br />
+      <br />
+      <br />
 
       <button onClick={saveAppointment}>
         Book Appointment
@@ -146,26 +238,54 @@ function Appointments() {
 
       <hr />
 
-      {appointments.map((appointment) => (
-        <div key={appointment._id}>
-          <p>Patient: {appointment.patient?.name}</p>
-          <p>Doctor: {appointment.doctor?.name}</p>
-          <p>
-            Date:{" "}
-            {new Date(appointment.appointmentDate).toLocaleString()}
-          </p>
-          <p>Reason: {appointment.reason}</p>
-          <p>Status: {appointment.status}</p>
+      <h2>Appointment List</h2>
 
-          <button
-            onClick={() => deleteAppointment(appointment._id)}
-          >
-            Delete
-          </button>
+      {appointments.length === 0 ? (
+        <p>No appointments found</p>
+      ) : (
+        appointments.map((appointment) => (
+          <div key={appointment._id}>
+            <p>
+              <strong>Patient:</strong>{" "}
+              {appointment.patient?.name || "Unknown"}
+            </p>
 
-          <hr />
-        </div>
-      ))}
+            <p>
+              <strong>Doctor:</strong>{" "}
+              {appointment.doctor?.name || "Unknown"}
+            </p>
+
+            <p>
+              <strong>Date:</strong>{" "}
+              {appointment.appointmentDate
+                ? new Date(
+                    appointment.appointmentDate
+                  ).toLocaleString()
+                : "Not available"}
+            </p>
+
+            <p>
+              <strong>Reason:</strong>{" "}
+              {appointment.reason}
+            </p>
+
+            <p>
+              <strong>Status:</strong>{" "}
+              {appointment.status}
+            </p>
+
+            <button
+              onClick={() =>
+                deleteAppointment(appointment._id)
+              }
+            >
+              Delete
+            </button>
+
+            <hr />
+          </div>
+        ))
+      )}
     </Layout>
   );
 }
